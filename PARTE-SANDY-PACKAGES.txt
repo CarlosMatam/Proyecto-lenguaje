@@ -1,0 +1,159 @@
+CREATE OR REPLACE PACKAGE PK_CLIENTE_DB AS
+
+  PROCEDURE INSERTAR_CLIENTE(
+            P_CEDULA CLIENTE.cedula%type,
+            P_NOMBRE CLIENTE.nombre%type,
+            P_APELLIDO CLIENTE.apellido%type,
+            P_CORREO CLIENTE.correo%type);
+            
+  PROCEDURE MODIFICAR_CLIENTE(
+            P_ID_CLIENTE CLIENTE.id_cliente%type,
+            P_CEDULA CLIENTE.cedula%type,
+            P_NOMBRE CLIENTE.nombre%type,
+            P_APELLIDO CLIENTE.apellido%type,
+            P_CORREO CLIENTE.correo%type);
+            
+  procedure ELIMINAR_CLIENTE(P_ID_CLIENTE CLIENTE.id_cliente%type);
+                               
+END PK_CLIENTE_DB;
+
+create or replace package body PK_CLIENTE_DB
+is 
+  PROCEDURE INSERTAR_CLIENTE(P_CEDULA CLIENTE.cedula%type,P_NOMBRE CLIENTE.nombre%type,P_APELLIDO CLIENTE.apellido%type,
+            P_CORREO CLIENTE.correo%type)
+    as  
+    begin  
+       insert into CLIENTE(CEDULA,NOMBRE,APELLIDO,CORREO) values(P_CEDULA,P_NOMBRE,P_APELLIDO,P_CORREO);
+        dbms_output.put_line('Cliente ingresado exitosamente..!'); 
+    end; 
+
+  PROCEDURE MODIFICAR_CLIENTE( P_ID_CLIENTE CLIENTE.id_cliente%type,P_CEDULA CLIENTE.cedula%type,P_NOMBRE CLIENTE.nombre%type,P_APELLIDO CLIENTE.apellido%type,
+            P_CORREO CLIENTE.correo%type)
+    is 
+    begin 
+       update cliente set cedula = P_CEDULA, nombre = P_NOMBRE, apellido = P_APELLIDO, 
+       correo = P_CORREO where id_cliente = P_ID_CLIENTE;
+       dbms_output.put_line('Cliente actualizado exitosamente..!'); 
+    end; 
+    
+  procedure ELIMINAR_CLIENTE(P_ID_CLIENTE CLIENTE.id_cliente%type)
+    is 
+    begin  
+     delete from cliente where id_cliente = P_ID_CLIENTE;
+      if SQL%NOTFOUND then
+       dbms_output.put_line('No se encontro el clienteque desea eliminar..!');
+      else
+       dbms_output.put_line('Cliente eliminado exitosamente..!');
+      end if;
+    end; 
+    
+ end;   
+/
+
+--------------------------------------------------------package gestion de mecanicos----------------------------------------------------
+CREATE SEQUENCE mecanico_id;
+CREATE TRIGGER mecanico_id_tr
+BEFORE INSERT ON MECANICOS
+FOR EACH ROW
+BEGIN
+  SELECT mecanico_id.nextval
+  INTO :new.IDMECANICOS
+  FROM dual;
+END;
+
+CREATE OR REPLACE PACKAGE PK_MECANICO_DB AS
+
+  PROCEDURE INSERTAR_MECANICO(
+            P_CEDULA MECANICOS.cedula_mecanico%type,
+            P_NOMBRE MECANICOS.nombre%type,
+            P_APELLIDO MECANICOS.apellido%type,
+            P_FECHAING MECANICOS.fechaingreso%type);
+            
+  PROCEDURE MODIFICAR_MECANICO(
+            P_ID_MECANICO MECANICOS.idmecanicos%type,
+            P_CEDULA MECANICOS.cedula_mecanico%type,
+            P_NOMBRE MECANICOS.nombre%type,
+            P_APELLIDO MECANICOS.apellido%type,
+            P_FECHAING MECANICOS.fechaingreso%type);
+            
+  procedure ELIMINAR_MECANICO(P_ID_MECANICO MECANICOS.idmecanicos%type,P_CEDULA MECANICOS.cedula_mecanico%type);
+                               
+END PK_MECANICO_DB;
+
+create or replace package body PK_MECANICO_DB
+is 
+  procedure INSERTAR_MECANICO( P_CEDULA MECANICOS.cedula_mecanico%type,P_NOMBRE MECANICOS.nombre%type,P_APELLIDO MECANICOS.apellido%type,
+            P_FECHAING MECANICOS.fechaingreso%type)
+  as 
+  begin
+   insert into mecanicos (CEDULA_MECANICO,NOMBRE,APELLIDO,FECHAINGRESO) values (P_CEDULA,P_NOMBRE,P_APELLIDO,P_FECHAING);
+    DBMS_OUTPUT.put_line('El id '|| P_CEDULA ||' ha sido ingresado exitosamente..!');
+  end;
+  
+  PROCEDURE MODIFICAR_MECANICO(P_ID_MECANICO MECANICOS.idmecanicos%type,P_CEDULA MECANICOS.cedula_mecanico%type,P_NOMBRE MECANICOS.nombre%type,
+            P_APELLIDO MECANICOS.apellido%type,
+            P_FECHAING MECANICOS.fechaingreso%type)
+  is 
+  begin
+   update mecanicos set cedula_mecanico=P_CEDULA , nombre= P_NOMBRE , apellido=P_APELLIDO , fechaingreso=P_FECHAING where idmecanicos = P_ID_MECANICO;
+    DBMS_OUTPUT.put_line('El id '|| P_CEDULA ||' ha sido eliminado exitosamente..!');
+  end;
+  
+  procedure ELIMINAR_MECANICO(P_ID_MECANICO MECANICOS.idmecanicos%type, P_CEDULA MECANICOS.cedula_mecanico%type)
+  is
+  begin
+     delete from  mecanicos where idmecanicos = P_ID_MECANICO and cedula_mecanico = P_CEDULA;
+     DBMS_OUTPUT.put_line( 'La cedula '|| P_CEDULA ||'ha sido eliminado exitosamente..!');
+  end;
+  
+end;  
+
+/
+
+-------------------------------------package actualizacion de asignacion----------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE PK_ASIGNA_MECANICO_DB AS
+           
+  PROCEDURE MODIFICAR_ASIGNACION(
+            P_ID_MECANICO AIGNA_MANTENIMIENTO.idmecanico%type,
+            P_ID_MANTENIMIENTO AIGNA_MANTENIMIENTO.IDMANTENIMIENTO%type
+            );
+                               
+END PK_ASIGNA_MECANICO_DB;
+
+create or replace package body PK_ASIGNA_MECANICO_DB
+is 
+  PROCEDURE MODIFICAR_ASIGNACION(P_ID_MECANICO AIGNA_MANTENIMIENTO.idmecanico%type,P_ID_MANTENIMIENTO AIGNA_MANTENIMIENTO.IDMANTENIMIENTO%type)
+  is 
+  begin
+   update AIGNA_MANTENIMIENTO set idmecanico=P_ID_MECANICO where IDMANTENIMIENTO = P_ID_MANTENIMIENTO;
+    DBMS_OUTPUT.put_line('El id '|| P_ID_MANTENIMIENTO ||' ha sido eliminado exitosamente..!');
+  end;
+end;  
+/
+
+----------------------------------------------package asignacion--------------------------------------
+CREATE SEQUENCE mantenimiento_id;
+CREATE TRIGGER mantenimiento_id_tr
+BEFORE INSERT ON MANTENIMIENTO
+FOR EACH ROW
+BEGIN
+  SELECT mantenimiento_id.nextval
+  INTO :new.IDMANTENIMIENTO
+  FROM dual;
+END;
+
+CREATE OR REPLACE TRIGGER insert_asignacion
+AFTER  INSERT ON MANTENIMIENTO
+       FOR EACH ROW
+    BEGIN 
+            INSERT INTO AIGNA_MANTENIMIENTO(IDMANTENIMIENTO)
+            VALUES(:NEW.IDMANTENIMIENTO);
+    END;
+
+CREATE OR REPLACE TRIGGER delete_asignacion
+AFTER  DELETE ON MANTENIMIENTO
+       FOR EACH ROW
+    BEGIN 
+      DELETE FROM AIGNA_MANTENIMIENTO WHERE IDMANTENIMIENTO = :OLD.IDMANTENIMIENTO;
+    END;

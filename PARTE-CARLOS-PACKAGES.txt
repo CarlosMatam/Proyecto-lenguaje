@@ -1,0 +1,420 @@
+SELECT * FROM DIRECCION;
+SELECT CLIENTE.NOMBRE , DIRECCION.IDDIRECCION , DIRECCION.DOMICILIO, DIRECCION.IDPROVINCIA
+,DIRECCION.IDCANTON ,DIRECCION.IDDISTRITO FROM DIRECCION INNER JOIN CLIENTE ON DIRECCION.ID_CLIENTE = CLIENTE. ID_CLIENTE;
+CREATE OR REPLACE PACKAGE AUTOS_DB AS
+
+  PROCEDURE INSERTAR_AUTO(
+            P_ID_AUTO vehiculo.idvehiculo%type,
+            P_ID_CLIENTE vehiculo.id_cliente%type,
+            P_PLACA vehiculo.placa%type,
+            P_MODELO vehiculo.modelo%type,
+            P_MARCA vehiculo.marca%type,
+            P_TIPO vehiculo.tipovehiculo%type);
+            
+  PROCEDURE ELIMINAR_AUTO(P_ID_AUTO vehiculo.idvehiculo%type);
+                          
+    PROCEDURE MODIFICAR_AUTO(
+            P_ID_AUTO vehiculo.idvehiculo%type,
+            P_ID_CLIENTE vehiculo.id_cliente%type,
+            P_PLACA vehiculo.placa%type,
+            P_MODELO vehiculo.modelo%type,
+            P_MARCA vehiculo.marca%type,
+            P_TIPO vehiculo.tipovehiculo%type);
+            
+            END AUTOS_DB;
+
+CREATE OR REPLACE PACKAGE BODY AUTOS_DB AS
+
+PROCEDURE INSERTAR_AUTO(
+P_ID_AUTO vehiculo.idvehiculo%type,
+P_ID_CLIENTE vehiculo.id_cliente%type,
+P_PLACA vehiculo.placa%type,
+P_MODELO vehiculo.modelo%type,
+P_MARCA vehiculo.marca%type,
+P_TIPO vehiculo.tipovehiculo%type)
+AS
+BEGIN
+INSERT INTO VEHICULO(
+IDVEHICULO,ID_CLIENTE,PLACA,MODELO,MARCA,TIPOVEHICULO)
+VALUES(P_ID_AUTO ,P_ID_CLIENTE,P_PLACA,P_MODELO,P_MARCA,P_TIPO);
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR');
+END INSERTAR_AUTO;
+---------------------------------------------------------------------------
+PROCEDURE  ELIMINAR_AUTO(
+P_ID_AUTO vehiculo.idvehiculo%type)
+AS
+BEGIN
+DELETE FROM VEHICULO WHERE idvehiculo = P_ID_AUTO;
+COMMIT;
+
+EXCEPTION 
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL ELIMINAR');
+ROLLBACK;
+
+END ELIMINAR_AUTO;
+
+-------------------------------------------------------------------------------
+PROCEDURE MODIFICAR_AUTO(
+P_ID_AUTO vehiculo.idvehiculo%type,
+P_ID_CLIENTE vehiculo.id_cliente%type,
+P_PLACA vehiculo.placa%type,
+P_MODELO vehiculo.modelo%type,
+P_MARCA vehiculo.marca%type,
+P_TIPO vehiculo.tipovehiculo%type)
+AS
+BEGIN
+UPDATE VEHICULO SET
+id_cliente = P_ID_CLIENTE,
+placa = P_PLACA ,
+modelo =  P_MODELO,
+marca = P_MARCA ,
+tipovehiculo = P_TIPO
+where idvehiculo = P_ID_AUTO;
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN 
+DBMS_OUTPUT.PUT_LINE('ERROR AL ACTUALIZAR');
+
+ROLLBACK;
+  DBMS_OUTPUT.PUT_LINE('CANCELADO');
+END MODIFICAR_AUTO;
+
+
+  
+
+
+                        END AUTOS_DB;
+                        
+------------------------------------Direcciones---------------------------------------
+CREATE OR REPLACE PACKAGE DIRECCION_DB AS
+
+  PROCEDURE INGRESAR_DIRECCION(
+            P_ID_CLIENTE direccion.id_cliente%type,
+            P_DOMICILIO direccion.domicilio%type,
+            P_ID_PROVINCIA direccion.idprovincia%type,
+            P_IDCANTON direccion.idcanton%type,
+            P_IDDISTRITO direccion.iddistrito%type);
+            
+ PROCEDURE  DELETE_DATOSS_DIRECCION(
+            P_IDDIRECCION direccion.iddireccion%type);
+                          
+  PROCEDURE ACTUALIZAR_DATOSS_DIRECCION(
+            P_IDDIRECCION direccion.iddireccion%type,
+            P_ID_CLIENTE direccion.id_cliente%type,
+            P_DOMICILIO direccion.domicilio%type,
+            P_ID_PROVINCIA direccion.idprovincia%type,
+            P_IDCANTON direccion.idcanton%type,
+            P_IDDISTRITO direccion.iddistrito%type);
+            
+            END DIRECCION_DB;
+
+CREATE OR REPLACE PACKAGE BODY DIRECCION_DB AS
+
+PROCEDURE INGRESAR_DIRECCION(
+P_ID_CLIENTE direccion.id_cliente%type,
+P_DOMICILIO direccion.domicilio%type,
+P_ID_PROVINCIA direccion.idprovincia%type,
+P_IDCANTON direccion.idcanton%type,
+P_IDDISTRITO direccion.iddistrito%type)
+AS
+BEGIN
+INSERT INTO direccion(ID_CLIENTE ,DOMICILIO ,IDPROVINCIA,IDCANTON,IDDISTRITO)
+VALUES(P_ID_CLIENTE ,P_DOMICILIO,P_ID_PROVINCIA,P_IDCANTON,P_IDDISTRITO);
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR');
+END INGRESAR_DIRECCION;
+---------------------------------------------------------------------------
+PROCEDURE  DELETE_DATOSS_DIRECCION(
+P_IDDIRECCION direccion.iddireccion%type)
+AS
+BEGIN
+DELETE FROM direccion WHERE IDDIRECCION = P_IDDIRECCION;
+COMMIT;
+
+EXCEPTION 
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL ELIMINAR');
+ROLLBACK;
+
+END DELETE_DATOSS_DIRECCION;
+
+-------------------------------------------------------------------------------
+PROCEDURE ACTUALIZAR_DATOSS_DIRECCION(
+P_IDDIRECCION direccion.iddireccion%type,
+P_ID_CLIENTE direccion.id_cliente%type,
+P_DOMICILIO direccion.domicilio%type,
+P_ID_PROVINCIA direccion.idprovincia%type,
+P_IDCANTON direccion.idcanton%type,
+P_IDDISTRITO direccion.iddistrito%type)
+AS
+BEGIN
+UPDATE direccion SET
+id_cliente = P_ID_CLIENTE,
+domicilio = P_DOMICILIO ,
+idprovincia =  P_ID_PROVINCIA,
+idcanton = P_IDCANTON ,
+iddistrito = P_IDDISTRITO
+where iddireccion = P_IDDIRECCION;
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN 
+DBMS_OUTPUT.PUT_LINE('ERROR AL ACTUALIZAR');
+
+ROLLBACK;
+  DBMS_OUTPUT.PUT_LINE('CANCELADO');
+END ACTUALIZAR_DATOSS_DIRECCION;
+
+
+                        END DIRECCION_DB;
+                        
+--------------------------------Cliente--------------------------------------------
+CREATE OR REPLACE PACKAGE CLIENTE_DB AS
+
+  PROCEDURE ingresar_datoss(
+            P_CEDULA cliente.cedula%type,
+            P_NOMBRE cliente.nombre%type,
+            P_APELLIDO cliente.apellido%type);
+            
+ PROCEDURE delete_datoss_clientes(
+            P_ID_CLIENTE cliente.id_cliente%type);
+                          
+  PROCEDURE actualizar_datoss_cliente(
+            P_ID_CLIENTE cliente.id_cliente%type,
+            P_CEDULA cliente.cedula%type,
+            P_NOMBRE cliente.nombre%type,
+            P_APELLIDO cliente.apellido%type);
+            
+            END CLIENTE_DB;
+
+
+CREATE OR REPLACE PACKAGE BODY CLIENTE_DB AS
+
+PROCEDURE ingresar_datoss(
+P_CEDULA cliente.cedula%type,
+P_NOMBRE cliente.nombre%type,
+P_APELLIDO cliente.apellido%type)
+AS
+BEGIN
+INSERT INTO cliente (CEDULA ,NOMBRE ,APELLIDO)
+VALUES(P_CEDULA ,P_NOMBRE,P_APELLIDO);
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR');
+END ingresar_datoss;
+---------------------------------------------------------------------------
+PROCEDURE delete_datoss_clientes(
+P_ID_CLIENTE cliente.id_cliente%type)
+AS
+BEGIN
+DELETE FROM cliente WHERE id_cliente = P_ID_CLIENTE;
+COMMIT;
+
+EXCEPTION 
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL ELIMINAR');
+ROLLBACK;
+
+END delete_datoss_clientes;
+
+-------------------------------------------------------------------------------
+PROCEDURE actualizar_datoss_cliente(
+P_ID_CLIENTE cliente.id_cliente%type,
+P_CEDULA cliente.cedula%type,
+P_NOMBRE cliente.nombre%type,
+P_APELLIDO cliente.apellido%type)
+AS
+BEGIN
+UPDATE cliente SET
+id_cliente = P_ID_CLIENTE,
+cedula = P_CEDULA ,
+nombre =  P_NOMBRE,
+apellido = P_APELLIDO 
+where id_cliente = P_ID_CLIENTE;
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN 
+DBMS_OUTPUT.PUT_LINE('ERROR AL ACTUALIZAR');
+
+ROLLBACK;
+  DBMS_OUTPUT.PUT_LINE('CANCELADO');
+END actualizar_datoss_cliente;
+
+
+                        END CLIENTE_DB;
+                        
+----------------------------Telefono----------------------------------
+SELECT * FROM TELEFONOS;
+DESC FROM TELEFONOS;
+
+CREATE OR REPLACE PACKAGE TELEFONO_DB AS
+
+  PROCEDURE ingresar_telefonos(
+            P_ID_CLIENTE telefonos.id_cliente%type,
+            P_NUMERO telefonos.numero%type
+            );
+            
+ PROCEDURE delete_datoss_telefonos(
+            P_ID_TELEFONO telefonos.id_telefono%type);
+                          
+  PROCEDURE actualizar_datoss_telefonos(
+            P_ID_TELEFONO telefonos.id_telefono%type,
+            P_ID_CLIENTE telefonos.id_cliente%type,
+            P_NUMERO telefonos.numero%type);
+            
+            END TELEFONO_DB;
+
+
+CREATE OR REPLACE PACKAGE BODY TELEFONO_DB AS
+
+PROCEDURE ingresar_telefonos(
+P_ID_CLIENTE telefonos.id_cliente%type,
+P_NUMERO telefonos.numero%type
+)
+AS
+BEGIN
+INSERT INTO telefonos (ID_CLIENTE ,NUMERO)
+VALUES(P_ID_CLIENTE ,P_NUMERO);
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR');
+END ingresar_telefonos;
+---------------------------------------------------------------------------
+PROCEDURE delete_datoss_telefonos(
+P_ID_TELEFONO telefonos.id_telefono%type)
+AS
+BEGIN
+DELETE FROM telefonos WHERE id_telefono = P_ID_TELEFONO;
+COMMIT;
+
+EXCEPTION 
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL ELIMINAR');
+ROLLBACK;
+
+END delete_datoss_telefonos;
+
+-------------------------------------------------------------------------------
+PROCEDURE actualizar_datoss_telefonos(
+P_ID_TELEFONO telefonos.id_telefono%type,
+P_ID_CLIENTE telefonos.id_cliente%type,
+P_NUMERO telefonos.numero%type)
+AS
+BEGIN
+UPDATE telefonos SET
+id_cliente = P_ID_CLIENTE,
+numero = P_NUMERO 
+where id_telefono=P_id_telefono;
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN 
+DBMS_OUTPUT.PUT_LINE('ERROR AL ACTUALIZAR');
+
+ROLLBACK;
+  DBMS_OUTPUT.PUT_LINE('CANCELADO');
+END actualizar_datoss_telefonos;
+
+
+                        END TELEFONO_DB;
+                        
+----------------------------------Mantenimiento---------------------------------
+SELECT * FROM MANTENIMIENTO;
+DESC FROM MANTENIMIENTO;
+select * from vehiculo;
+
+execute MANTE_DB.actualizar_datos_mantenimiento(1,'989919' ,'oracle','04/05/20', '04/05/20');
+execute MANTE_DB.ingresar_datoss_mantenimiento('7x7','ora' ,'04/05/20', '04/05/21');
+
+CREATE OR REPLACE PACKAGE MANTE_DB AS
+
+  PROCEDURE ingresar_datoss_mantenimiento(
+              P_PLACA mantenimiento.placa%type,
+              P_DESCRIPCION mantenimiento.descripcion%type,
+              P_FECHAHORALL mantenimiento.fechahorall%type,
+              P_FECHAHORASA mantenimiento.fechahorasa%type
+              );
+            
+ PROCEDURE delete_datoss_mantenimiento(
+              P_IDMANTENIMIENTO mantenimiento.idmantenimiento%type);
+                          
+  PROCEDURE actualizar_datos_mantenimiento(
+            P_IDMANTENIMIENTO mantenimiento.idmantenimiento%type,
+            P_PLACA mantenimiento.placa%type,
+            P_DESCRIPCION mantenimiento.descripcion%type,
+            P_FECHAHORALL mantenimiento.fechahorall%type,
+            P_FECHAHORASA mantenimiento.fechahorasa%type);
+            
+            END MANTE_DB;
+
+
+CREATE OR REPLACE PACKAGE BODY MANTE_DB AS
+
+PROCEDURE ingresar_datoss_mantenimiento(
+P_PLACA mantenimiento.placa%type,
+P_DESCRIPCION mantenimiento.descripcion%type,
+P_FECHAHORALL mantenimiento.fechahorall%type,
+P_FECHAHORASA mantenimiento.fechahorasa%type
+)
+AS
+BEGIN
+INSERT INTO mantenimiento (placa ,descripcion,fechahorall,fechahorasa)
+VALUES(P_PLACA ,P_DESCRIPCION,P_FECHAHORALL,P_FECHAHORASA);
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR');
+END ingresar_datoss_mantenimiento;
+---------------------------------------------------------------------------
+PROCEDURE delete_datoss_mantenimiento(
+P_IDMANTENIMIENTO mantenimiento.idmantenimiento%type)
+AS
+BEGIN
+DELETE FROM mantenimiento WHERE idmantenimiento = P_IDMANTENIMIENTO;
+COMMIT;
+
+EXCEPTION 
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR AL ELIMINAR');
+ROLLBACK;
+
+END delete_datoss_mantenimiento;
+
+-------------------------------------------------------------------------------
+PROCEDURE actualizar_datos_mantenimiento(
+P_IDMANTENIMIENTO mantenimiento.idmantenimiento%type,
+P_PLACA mantenimiento.placa%type,
+P_DESCRIPCION mantenimiento.descripcion%type,
+P_FECHAHORALL mantenimiento.fechahorall%type,
+P_FECHAHORASA mantenimiento.fechahorasa%type)
+AS
+BEGIN
+UPDATE mantenimiento SET
+placa = P_PLACA,
+descripcion = P_DESCRIPCION ,
+fechahorall = P_FECHAHORALL,
+fechahorasa = P_FECHAHORASA
+where idmantenimiento = P_IDMANTENIMIENTO;
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN 
+DBMS_OUTPUT.PUT_LINE('ERROR AL ACTUALIZAR');
+
+ROLLBACK;
+  DBMS_OUTPUT.PUT_LINE('CANCELADO');
+END actualizar_datos_mantenimiento;
+
+
+                        END MANTE_DB;
+                    
